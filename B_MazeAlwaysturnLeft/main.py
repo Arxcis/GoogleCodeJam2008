@@ -2,13 +2,14 @@
     problem B: Always turn left maze.
 
     session 00:00 - 03:22
+    session 12:50 - 
     Completed: - Run from start to end.
     Left to do: - Run from end to start.
                 - Convert [0,0,0,0] pattern
                    to hex-pattern. 
 """
 
-from turtle import Screen
+from turtle import Screen, Turtle
 import os
 
 
@@ -47,8 +48,6 @@ class MazeState:
         if switch == 1:
             self.maze[self.row][self.col][self.direction] = 1
 
-
-
     def take_action(self, action):
         """ Direction:
             north = 0
@@ -71,7 +70,7 @@ class MazeState:
             self.check_heading()
             print("Heading = ", self.heading)
 
-        if action == 'L':
+        elif action == 'L':
             if direction == 0:
                 self.direction = 2
             elif direction == 1:
@@ -83,6 +82,9 @@ class MazeState:
 
             self.check_heading()
             print("Heading = ", self.heading)
+
+        else: 
+            print("\n")
 
         if action == 'W':
             if direction == 0:
@@ -101,7 +103,6 @@ class MazeState:
             print("Row = ", self.row, "Column = ", self.col)
             self.expand_maze()
 
-
     def expand_maze(self):
 
         # Expand left
@@ -110,7 +111,7 @@ class MazeState:
                 (self.maze[row]).insert(0, [0,0,0,0])
             self.col = 0
             self.update_block(1)
-            self.print_maze()
+            #self.print_maze()
 
         # Expand downwards
         else:
@@ -124,10 +125,10 @@ class MazeState:
 
                 (self.maze).append(new_row)
                 self.update_block(1)
-                self.print_maze()
+                #self.print_maze()
                 return 0
 
-
+        # Expand leftwards
             try: 
                 self.maze[self.row][self.col]
 
@@ -135,47 +136,110 @@ class MazeState:
                 for row in range(len(self.maze)):
                     (self.maze[row]).append([0,0,0,0])
                 self.update_block(1)
-                self.print_maze()
+                #self.print_maze()
                 return 0
 
             self.update_block(1)
-            self.print_maze()
-
-
+            #self.print_maze()
 
     def print_maze(self):
         for row in self.maze:
             print(row)
-        input()
-        os.system('cls' if os.name == 'nt' else 'clear')
 
     def print_current(self):
         print(self.maze[self.row][self.col])
 
-
 state = MazeState()
+
+# ---- TURTLE TESTLOOP -----------------
+
+t  = Turtle()
+s = Screen()
+s.delay(0)
+
+#walls = Turtle()
+
+def turtle_setup():
+    start_x = 0
+    start_y = 200
+    t.penup()
+    t.goto(start_x, start_y)
+    t.seth(270)
+    t.pendown()
+    t.speed(0)
+    t.write("START!")
+    t.fd(40)
+
+    #walls.ht()
+    #walls.speed(0)
+    #draw_walls()
+
+def draw_walls():
+    x, y = t.position()
+    walls.clear()
+    walls.penup()
+    walls.goto(x-20, y+20)
+    
+    # Indexes:[north, east, south, west]
+    indexes = [0, 3, 1, 2]
+    for i in indexes:
+        case = state.maze[state.row][state.col][i]
+        if case:
+            walls.fd(40)
+            walls.rt(90)
+
+        if not case:
+            walls.pendown()
+            walls.fd(40)
+            walls.rt(90)
+            walls.penup()
+
+
+def pick_action(char):
+    if char == 'R':
+        turtle_right()
+    if char == 'L':
+        turtle_left()
+    if char == 'W':
+        turtle_walk()
+
+def turtle_right():
+    t.rt(90)
+
+def turtle_left():
+    t.lt(90)
+
+def turtle_walk():
+    t.fd(10)
+
+turtle_setup()
+# ----------------- END OF TESTLOOP -----------------
+
+
 print("Heading = ", state.heading)
 state.print_maze()
 
-
-
  # Hard-input test-loop
 
-input_string = "WRWWLWWLWWLWLWRRWRWWWRWWRWLW"
-for i in range(len(input_string)):
+input_string = ("WWWWWLWLWRWLWLWRWRWRRWLWLWWLWWLWWRRWWRWWRWLWLWRWRRWLWWLWLWRRWWLWLWWRRWWRWLWLWWRWLWLWWLWRWWWLWRRWWRRWLWLWWLWRRWRWWLWLWRRWLWLWWLWRRWRWLWWRWLWRWLWLWRRWLWLWRWLWLWRWLWLWRRWLWLWRRWRWWLWLWWWLWRWRRWLWLWWRRWWWWLWRRWLWLWRWLWLWWWLWRWRRWLWLWWLWRWWLWRRWLWLWRWRRWLWLWRWRRWLWWWWLWLWRRWWWWLWLWRWLWLWRRWLWLWRRWWLWLWWRWWLWLWRRWRWLWRRWLWLWRWRWRRWLWLWRWLWLWRRWLWLWWLWRRWWRWLWLWRRWLWLWRRWWLWWLWLWRRWLWLWRRWWWLWLWRWLWLWRRWLWLWRRWRWWLWLWRWLWLWRRWLWLWWWRWWRRWWLWWWLWLWWRRWLWLWRWLWRWWRRWWLWLWWWLWRRWRWWLWLWWRRWWWRRWLWLWWLWRWLWRWWWWLWLWRWLWLWRWWRRWWLWLWWWLWRWLWLWRRWRWLWLWRWWRWRRWLWWLWLWRRWWWLWRWWWLWLWRWLWLWRWRWLWLWRWLWLWRRWRWLWLWRWRRWLWLWRRWWWLWRWRWLWLWRWWLWLWWWWWLWRRWLWLWRWRRWLWLWRWWRRWWLWLWRRWLWWWWLWRRWLWLWWLWRWLWLWWRRWWLWLWWRWRRWLWLWWRRWWLWLWWWRRWWWWWLWLWWWRWLWLWRWRWWRRWWLWLWRWLWLWRRWWLWLWWWRRWWWWRRWLWRWLWLWRRWLWLWWLWRRWLWRWLWLWRRWRWLWLWRWWLWLWWWRRWLWLWRRWLWLWWLWWRWWLWLWRWRWLWRRWLWRRWWLWLWRWLWLWRRWWWLWWLWLWRWWRRWWLWLWRRWLWLWWLWRRWWLWLWWRWLWLWRRWRWLWWLWLWRRWWRRWLWLWWLWRRWWWRRWWLWLWRRWLWLWRRWLWWWLWLWWRRWWLWWWLWLWWRRWLWLWRWRRWLWLWWLWRRWLWRRWWLWLWWRWWRRWWLWLWRRWLWRWLWWLWLWRWLWRRWRWLWWRWWLWRWLWWWLWLWWRWLWRWRRWLWLWRRWLWLWWLWRRWLWWLWLWRRWWLWWLWLWRWRRWLWLWWLWRRWWRRWLWLWRRWLWWLWLWRWLWRRWRWLWLWWLWWRWRRWLWLWWRRWWLWLWWRRWWWWWLWLWRRWLWLWWLWRRWLWLWRWRRWLWLWWLWRRWWRRWLWWLWLWRRWLWWLWLWRWRWWRWLWLWRRWRWRWLWWLWLWRWLWWRRWLWLWW")
+input_string = input_string[1:-1]
 
+for i in range(len(input_string)):
     char = input_string[i]
+    pick_action(char)
     state.take_action(char)
 
+t.fd(5)
+t.shape("circle")
+t.shapesize(0.1)
+t.write("Mål!")
 
-""" # Turtle screen test-loop
 
-s = Screen()
 
-s.onkey(lambda: state.take_action('R'), 'Right')
-s.onkey(lambda: state.take_action('L'), 'Left')
-s.onkey(lambda: state.take_action('W'), 'Up')
-s.onkey(state.print_current, "space")
-s.listen()
+#s.onkey(turtle_right, 'Right')
+#s.onkey(turtle_left, 'Left')
+#s.onkey(turtle_walk, 'Up')
+#s.onkey(state.print_current, "space")
+#s.listen()
 s.mainloop()
-"""
+
