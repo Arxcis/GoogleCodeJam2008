@@ -6,7 +6,7 @@
     Author   : Jonas
     Opprettet: 14.04.2016
      Session : 15:00 - 17:10
-     Session : 21:40 -                       
+     Session : 21:40 - 23:40                      
      ---------------------------------------------------"""
 
 import math
