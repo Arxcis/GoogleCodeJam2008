@@ -2,7 +2,7 @@
     problem B: Always turn left maze.
 
     session 00:00 - 03:22
-    session 12:50 - 
+    session 12:50 - 13:57
     Completed: - Run from start to end.
     Left to do: - Run from end to start.
                 - Convert [0,0,0,0] pattern
